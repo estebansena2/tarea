@@ -1,0 +1,800 @@
+1. Diagrama de Clases
+Descripción:
+Un diagrama detallado que muestra todas las clases principales del sistema, incluyendo relaciones como herencia, agregación, composición y asociaciones múltiples.
+
+Ejemplo:
+
+plaintext
+Copiar código
++------------------------+
+|        Persona         |
++------------------------+
+| - nombre: String       |
+| - direccion: String    |
+| - telefono: String     |
++------------------------+
+| + getNombre(): String  |
+| + setDireccion(): void |
++------------------------+
+      ^
+      |
++------------------------+
+|        Usuario         |
++------------------------+
+| - idUsuario: int       |
+| - email: String        |
+| - contraseña: String   |
+| - rol: String          |
++------------------------+
+| + registrar(): void    |
+| + autenticar(): void   |
+| + getEmail(): String   |
+| + publicarAnuncio(): void|
+| + adoptarMascota(): void|
++------------------------+
+      ^
+      |
++-----------------------+
+|   Administrador       |
++-----------------------+
+| - permisos: String    |
++-----------------------+
+| + gestionarUsuarios(): void |
+| + moderarAnuncios(): void |
++-----------------------+
+
++------------------------+
+|        Mascota         |
++------------------------+
+| - idMascota: int       |
+| - nombre: String       |
+| - tipo: String         |
+| - raza: String         |
+| - edad: int            |
+| - estado: String       |
+| - ubicacion: String    |
+| - foto: String         |
++------------------------+
+| + registrarMascota(): void |
+| + actualizarEstado(): void |
++------------------------+
+
++------------------------+
+|        Anuncio         |
++------------------------+
+| - idAnuncio: int       |
+| - fechaPublicacion: Date|
+| - tipo: String         |
+| - descripcion: String  |
+| - estado: String       |
+| - idMascota: int       |
++------------------------+
+| + publicarAnuncio(): void|
+| + actualizarAnuncio(): void|
++------------------------+
+
++------------------------+
+|      Notificacion      |
++------------------------+
+| - idNotificacion: int  |
+| - mensaje: String      |
+| - fechaEnvio: Date     |
+| - idUsuario: int       |
++------------------------+
+| + enviarNotificacion(): void|
++------------------------+
+
++------------------------+
+|       Comentario       |
++------------------------+
+| - idComentario: int    |
+| - contenido: String    |
+| - fecha: Date          |
+| - idUsuario: int       |
+| - idAnuncio: int       |
++------------------------+
+| + agregarComentario(): void|
+| + eliminarComentario(): void|
++------------------------+
+
++------------------------+
+|      Transaccion       |
++------------------------+
+| - idTransaccion: int   |
+| - tipo: String         |
+| - fecha: Date          |
+| - idUsuario: int       |
+| - idMascota: int       |
++------------------------+
+| + registrarTransaccion(): void|
++------------------------+
+
+Usuario "1" --- "N" Mascota : posee
+Usuario "1" --- "N" Anuncio : publica
+Mascota "1" --- "N" Anuncio : referenciada_en
+Anuncio "1" --- "N" Notificacion : genera
+Usuario "1" --- "N" Notificacion : recibe
+Anuncio "1" --- "N" Comentario : tiene
+Usuario "1" --- "N" Comentario : escribe
+Usuario "1" --- "N" Transaccion : realiza
+2. Diagrama de Objetos
+Descripción:
+Un diagrama que muestra instancias específicas de las clases y sus estados, reflejando un escenario detallado en tiempo de ejecución.
+
+Ejemplo:
+
+plaintext
+Copiar código
++----------------------+
+|    ana:Usuario       |
++----------------------+
+| nombre = "Ana"       |
+| direccion = "Calle 456"|
+| telefono = "555-5678"|
+| email = "ana@example.com"|
+| contraseña = "****"  |
+| rol = "Usuario"      |
++----------------------+
+
++----------------------+
+|   admin:Administrador|
++----------------------+
+| nombre = "Admin"     |
+| direccion = "Calle 789"|
+| telefono = "555-7890"|
+| email = "admin@example.com"|
+| contraseña = "****"  |
+| rol = "Administrador"|
+| permisos = "completo"|
++----------------------+
+
++----------------------+
+|    buddy:Mascota     |
++----------------------+
+| idMascota = 1        |
+| nombre = "Buddy"     |
+| tipo = "Perro"       |
+| raza = "Labrador"    |
+| edad = 3             |
+| estado = "Perdido"   |
+| ubicacion = "Parque Central"|
+| foto = "buddy.jpg"   |
++----------------------+
+
++----------------------+
+|   anuncio1:Anuncio   |
++----------------------+
+| idAnuncio = 1        |
+| fechaPublicacion = "2024-06-14"|
+| tipo = "Perdido"     |
+| descripcion = "Perro perdido en el parque"|
+| estado = "Activo"    |
+| idMascota = 1        |
++----------------------+
+
++----------------------+
+|   notif1:Notificacion|
++----------------------+
+| idNotificacion = 1   |
+| mensaje = "Anuncio publicado con éxito"|
+| fechaEnvio = "2024-06-14"|
+| idUsuario = 1        |
++----------------------+
+
++----------------------+
+|  comentario1:Comentario|
++----------------------+
+| idComentario = 1     |
+| contenido = "Espero encuentres a Buddy pronto!"|
+| fecha = "2024-06-14" |
+| idUsuario = 1        |
+| idAnuncio = 1        |
++----------------------+
+
++----------------------+
+|  trans1:Transaccion  |
++----------------------+
+| idTransaccion = 1    |
+| tipo = "Adopción"    |
+| fecha = "2024-06-15" |
+| idUsuario = 2        |
+| idMascota = 2        |
++----------------------+
+3. Diagrama de Secuencia
+Descripción:
+Este diagrama muestra la interacción detallada entre objetos para el proceso completo de publicación de un anuncio de mascota perdida y la notificación correspondiente, incluyendo la adición de comentarios.
+
+Ejemplo:
+
+plaintext
+Copiar código
+Usuario       Sistema           Mascota         Anuncio       Comentario      Notificacion
+ |               |                |               |               |               |
+ | publicarAnuncio()              |               |               |               |
+ |-------------->|                |               |               |               |
+ |               | registrarMascota()             |               |               |
+ |               |--------------->|               |               |               |
+ |               |                | registrarAnuncio()             |               |
+ |               |                |--------------->|               |               |
+ |               |                |               | generarNotificacion()         |
+ |               |                |               |--------------->|              |
+ |               |                |               |               | notif1        |
+ |               |                |               |               |<--------------|
+ |               |                |               |               |              |
+ |               |                |               |               |              |
+ | agregarComentario()            |               |               |              |
+ |-------------->|                |               |               |              |
+ |               | registrarComentario()          |               |              |
+ |               |--------------->|               |               |              |
+ |               |                |               | comentario1   |              |
+ |               |                |               |-------------->|              |
+ |               |                |               |               |              |
+4. Diagrama de Colaboración (o Comunicación)
+Descripción:
+Este diagrama muestra cómo los objetos colaboran entre sí para completar el proceso de publicación de un anuncio de mascota perdida, la adición de comentarios y la notificación correspondiente.
+
+Ejemplo:
+
+plaintext
+Copiar código
++-----------+        +------------+       +-----------+       +-----------+       +--------------+       +------------+
+|  Usuario  |        |   Sistema  |       |  Mascota  |       |  Anuncio  |       | Comentario   |       | Notificacion|
++-----------+        +------------+       +-----------+       +-----------+       +--------------+       +------------+
+      |                    |                   |                   |                       |                       |
+1: publicarAnuncio()------>2: registrarMascota()->3: mascota1      |                       |                       |
+      |                    |                   |                   |                       |                       |
+      |                    |                   |                   |                       |                       |
+      |                    |                   |4: registrarAnuncio()->5: anuncio1        |                       |
+      |                    |                   |                   |                       |                       |
+      |                    |                   |                   |6: generarNotificacion()------->7: notif1       |
+      |                    |                   |                   |                       |                       |
+      |                    |                   |                   |                       |                       |
+8: agregarComentario()---->9: registrarComentario()->10: comentario1 |                       |                       |
+      |                    |                   |                   |                       |                       |
+5. Diagrama de Actividades
+Descripción:
+Este diagrama muestra el flujo de trabajo detallado para el proceso de publicación de un anuncio de mascota perdida, la adición de comentarios y la generación de notificaciones.
+
+Ejemplo:
+
+plaintext
+Copiar código
+Inicio
+  |
+  V
+Publicar Anuncio
+  |
+  V
+Registrar Mascota
+  |
+  V
+[Si Mascota Nueva]
+  |
+  V
+Registrar Nueva Mascota
+  |
+  V
+Generar Anuncio
+  |
+  V
+[Anuncio Publicado]
+  |
+  V
+Generar Notificación
+  |
+  V
+Enviar Notificación
+  |
+  V
+[Agregar Comentarios]
+  |
+  V
+Registrar Comentario
+  |
+  V
+Fin
+6. Diagrama de Estados
+Descripción:
+Este diagrama muestra los estados detallados por los que pasa una mascota durante el proceso de recuperación y adopción, incluyendo la gestión de notificaciones y comentarios.
+
+Ejemplo:
+
+plaintext
+Copiar código
++-----------------+
+|  Registrada     |
++-----------------+
+       |
+       V
++-----------------+
+|  Publicada      |
++-----------------+
+       |
+       V
++-----------------+
+|  Notificada     |
++-----------------+
+       |
+       V
++-----------------+
+|  Comentada      |
++-----------------+
+       |
+       V
++-----------------+
+|  En Adopción    |
++-----------------+
+       |
+       V
++-----------------+
+|  Adoptada       |
++-----------------+
+7. Diagrama de Componentes
+Descripción:
+Este diagrama muestra los componentes detallados del sistema de recuperación y adopción de mascotas y sus interacciones, incluyendo servicios de notificaciones y gestión de anuncios y comentarios.
+
+Ejemplo:
+
+plaintext
+Copiar código
++--------------------+
+|   Interfaz Usuario |
++--------------------+
+          |
+          V
++--------------------+          +-------------------+
+|  Aplicación Web    |          | Servicio Anuncios |
++--------------------+----------+-------------------+
+          |                           |
+          V                           V
++--------------------+          +-------------------+
+|  Base de Datos     |          | Servicio Mascotas |
++--------------------+----------+-------------------+
+          |                           |
+          V                           V
++--------------------+          +-------------------+
+|  Sistema de Notificaciones    | Servicio Usuarios |
++--------------------+          +-------------------+
+          |                           |
+          V                           V
++--------------------+          +-------------------+
+| Servicio Comentarios|          | Servicio Transacciones|
++--------------------+          +-------------------+
+8. Diagrama de Despliegue
+Descripción:
+Este diagrama muestra la configuración de hardware y software en tiempo de ejecución, incluyendo múltiples servidores y componentes distribuidos para gestión de notificaciones, anuncios, comentarios y usuarios.
+
+Ejemplo:
+
+plaintext
+Copiar código
++-------------------------+     +-------------------------+
+|       Cliente           |     |        Servidor         |
++-------------------------+     +-------------------------+
+| Navegador Web           |     |  Servidor de Aplicaciones|
+| - Aplicación Web        |     | - Apache Tomcat          |
++-------------------------+     | - Sistema Mascotas       |
+                                +-------------------------+
+                                         |
+                                         V
+                                +-------------------------+
+                                |  Servidor de Base de Datos |
+                                +-------------------------+
+                                | - MySQL                 |
+                                +-------------------------+
+                                         |
+                                         V
+                                +-------------------------+
+                                |  Servidor de Anuncios   |
+                                +-------------------------+
+                                | - Servicio de Anuncios  |
+                                +-------------------------+
+                                         |
+                                         V
+                                +-------------------------+
+                                |  Servidor de Notificaciones |
+                                +-------------------------+
+                                | - Servicio de Email     |
+                                +-------------------------+
+                                         |
+                                         V
+                                +-------------------------+
+                                |  Servidor de Comentarios |
+                                +-------------------------+
+                                | - Servicio de Comentarios |
+                                +-------------------------+
+Estos diagramas proporcionan una visión profesional y detallada del sistema, mostrando todas las interacciones, relaciones y componentes necesarios para una aplicación web de recuperación y adopción de mascotas. Cada diagrama aporta una perspectiva específica, permitiendo una comprensión completa y un diseño robusto del sistema.
+
+
+
+1. Diagrama de Clases Complejo
+Este diagrama de clases detalla todas las clases relevantes, atributos, métodos y relaciones del sistema de adopción y recuperación de mascotas.
+
+Ejemplo:
+
+plaintext
+Copiar código
++------------------------+
+|         Persona        |
++------------------------+
+| - id: int              |
+| - nombre: String       |
+| - direccion: String    |
+| - telefono: String     |
+| - email: String        |
++------------------------+
+| + Persona(id: int, nombre: String, direccion: String, telefono: String, email: String)|
+| + getId(): int         |
+| + getNombre(): String  |
+| + setDireccion(direccion: String): void |
+| + getTelefono(): String|
+| + getEmail(): String   |
++------------------------+
+      ^
+      |
++------------------------+
+|        Usuario         |
++------------------------+
+| - idUsuario: int       |
+| - contraseña: String   |
+| - rol: String          |
++------------------------+
+| + Usuario(idUsuario: int, nombre: String, direccion: String, telefono: String, email: String, contraseña: String, rol: String)|
+| + registrar(): void    |
+| + autenticar(): void   |
+| + publicarAnuncio(anuncio: Anuncio): void|
+| + adoptarMascota(mascota: Mascota): void|
+| + buscarMascota(tipo: String, ubicacion: String): List<Mascota> |
+| + gestionarPerfil(): void |
++------------------------+
+      ^
+      |
++-----------------------+
+|   Administrador       |
++-----------------------+
+| - permisos: String    |
++-----------------------+
+| + Administrador(id: int, nombre: String, direccion: String, telefono: String, email: String, contraseña: String, rol: String, permisos: String)|
+| + gestionarUsuarios(): void |
+| + moderarAnuncios(): void |
+| + gestionarSistema(): void |
++-----------------------+
+
++------------------------+
+|        Mascota         |
++------------------------+
+| - idMascota: int       |
+| - nombre: String       |
+| - tipo: String         |
+| - raza: String         |
+| - edad: int            |
+| - estado: EstadoMascota |
+| - ubicacion: String    |
+| - foto: String         |
++------------------------+
+| + Mascota(idMascota: int, nombre: String, tipo: String, raza: String, edad: int, estado: EstadoMascota, ubicacion: String, foto: String)|
+| + registrarMascota(): void |
+| + actualizarEstado(nuevoEstado: EstadoMascota): void |
+| + obtenerDetalles(): String |
++------------------------+
+
++------------------------+
+|        Anuncio         |
++------------------------+
+| - idAnuncio: int       |
+| - fechaPublicacion: Date|
+| - tipo: TipoAnuncio    |
+| - descripcion: String  |
+| - estado: EstadoAnuncio |
+| - idMascota: int       |
++------------------------+
+| + Anuncio(idAnuncio: int, fechaPublicacion: Date, tipo: TipoAnuncio, descripcion: String, estado: EstadoAnuncio, idMascota: int)|
+| + publicarAnuncio(): void|
+| + actualizarAnuncio(): void|
+| + obtenerDetalles(): String |
++------------------------+
+
++------------------------+
+|      Notificacion      |
++------------------------+
+| - idNotificacion: int  |
+| - mensaje: String      |
+| - fechaEnvio: Date     |
+| - idUsuario: int       |
++------------------------+
+| + Notificacion(idNotificacion: int, mensaje: String, fechaEnvio: Date, idUsuario: int)|
+| + enviarNotificacion(): void|
++------------------------+
+
++------------------------+
+|       Comentario       |
++------------------------+
+| - idComentario: int    |
+| - contenido: String    |
+| - fecha: Date          |
+| - idUsuario: int       |
+| - idAnuncio: int       |
++------------------------+
+| + Comentario(idComentario: int, contenido: String, fecha: Date, idUsuario: int, idAnuncio: int)|
+| + agregarComentario(): void|
+| + eliminarComentario(): void|
++------------------------+
+
++------------------------+
+|      Transaccion       |
++------------------------+
+| - idTransaccion: int   |
+| - tipo: TipoTransaccion|
+| - fecha: Date          |
+| - idUsuario: int       |
+| - idMascota: int       |
++------------------------+
+| + Transaccion(idTransaccion: int, tipo: TipoTransaccion, fecha: Date, idUsuario: int, idMascota: int)|
+| + registrarTransaccion(): void|
++------------------------+
+
+Enum EstadoMascota:
+- PERDIDA
+- EN_ADOPCION
+- RECUPERADA
+- ADOPTADA
+
+Enum TipoAnuncio:
+- PERDIDO
+- ENCONTRADO
+- ADOPCION
+
+Enum EstadoAnuncio:
+- ACTIVO
+- INACTIVO
+
+Enum TipoTransaccion:
+- ADOPCION
+- RECUPERACION
+- PUBLICACION
+2. Diagrama de Objetos Complejo
+Este diagrama muestra instancias específicas de las clases en tiempo de ejecución, detallando múltiples usuarios, mascotas, anuncios y otros elementos del sistema.
+
+Ejemplo:
+
+plaintext
+Copiar código
++----------------------+
+|    ana:Usuario       |
++----------------------+
+| idUsuario = 1         |
+| nombre = "Ana"       |
+| direccion = "Calle 456"|
+| telefono = "555-5678"|
+| email = "ana@example.com"|
+| contraseña = "****"  |
+| rol = "Usuario"      |
++----------------------+
+
++----------------------+
+|   admin:Administrador|
++----------------------+
+| idUsuario = 2         |
+| nombre = "Admin"     |
+| direccion = "Calle 789"|
+| telefono = "555-7890"|
+| email = "admin@example.com"|
+| contraseña = "****"  |
+| rol = "Administrador"|
+| permisos = "completo"|
++----------------------+
+
++----------------------+
+|    buddy:Mascota     |
++----------------------+
+| idMascota = 1        |
+| nombre = "Buddy"     |
+| tipo = "Perro"       |
+| raza = "Labrador"    |
+| edad = 3             |
+| estado = PERDIDA     |
+| ubicacion = "Parque Central"|
+| foto = "buddy.jpg"   |
++----------------------+
+
++----------------------+
+|   anuncio1:Anuncio   |
++----------------------+
+| idAnuncio = 1        |
+| fechaPublicacion = "2024-06-14"|
+| tipo = PERDIDO       |
+| descripcion = "Perro perdido en el parque"|
+| estado = ACTIVO      |
+| idMascota = 1        |
++----------------------+
+
++----------------------+
+|   notif1:Notificacion|
++----------------------+
+| idNotificacion = 1   |
+| mensaje = "Anuncio publicado con éxito"|
+| fechaEnvio = "2024-06-14"|
+| idUsuario = 1        |
++----------------------+
+
++----------------------+
+|  comentario1:Comentario|
++----------------------+
+| idComentario = 1     |
+| contenido = "Espero encuentres a Buddy pronto!"|
+| fecha = "2024-06-14" |
+| idUsuario = 1        |
+| idAnuncio = 1        |
++----------------------+
+
++----------------------+
+|  trans1:Transaccion  |
++----------------------+
+| idTransaccion = 1    |
+| tipo = ADOPCION      |
+| fecha = "2024-06-15" |
+| idUsuario = 2        |
+| idMascota = 2        |
++----------------------+
+3. Diagrama de Estados Complejo
+Este diagrama de estados detalla los estados posibles y las transiciones complejas de una mascota desde que es registrada hasta que es adoptada o recuperada.
+
+Ejemplo:
+
+plaintext
+Copiar código
++-------------------------+
+|     Registrada          |
+|                         |
+| - Esperando publicación |
+| - Sin comentarios       |
++-------------------------+
+      |                 ^
+      |                 |
+      V                 |
++-------------------------+
+|       Publicada          |
+|                         |
+| - Anunciada             |
+| - Comentarios activos   |
++-------------------------+
+      |                 ^
+      |                 |
+      V                 |
++-------------------------+
+|       Adoptada           |
+|                         |
+| - Proceso de adopción   |
+| - Comentarios cerrados  |
++-------------------------+
+      |                 ^
+      |                 |
+      V                 |
++-------------------------+
+|       Recuperada         |
+|                         |
+| - Reunión con dueño     |
+| - Caso cerrado          |
++-------------------------+
+4. Diagrama de Actividades Complejo
+
+
+
+
+continua
+ChatGPT
+Claro, aquí te presento el diagrama de actividades complejo que detalla el flujo detallado de actividades para la gestión de anuncios, mascotas y usuarios en el sistema de recuperación y adopción de mascotas.
+
+4. Diagrama de Actividades Complejo
+Descripción:
+Este diagrama muestra el flujo detallado de actividades para las operaciones principales del sistema, como la gestión de usuarios, publicación de anuncios, gestión de mascotas y comentarios.
+
+Ejemplo:
+
+plaintext
+Copiar código
+Inicio
+  |
+  V
+[Inicio de Sesión]
+  |
+  V
+[Autenticación]
+  |
+  V
+[Dashboard]
+  |
+  V
+[Seleccionar Acción]
+  |
+  V
+[Publicar Anuncio] - Usuario
+  |
+  V
+[Registrar Mascota] - Usuario
+  |
+  V
+[Buscar Mascota] - Usuario
+  |
+  V
+[Adoptar Mascota] - Usuario
+  |
+  V
+[Comentar Anuncio] - Usuario
+  |
+  V
+[Moderar Anuncios] - Administrador
+  |
+  V
+[Gestionar Usuarios] - Administrador
+  |
+  V
+[Actualizar Estado Mascota] - Administrador
+  |
+  V
+[Enviar Notificación] - Sistema
+  |
+  V
+[Registrar Transacción] - Sistema
+  |
+  V
+Fin
+5. Diagrama de Componentes Complejo
+Descripción:
+Este diagrama detalla los componentes físicos y lógicos del sistema de adopción y recuperación de mascotas, incluyendo servicios, interfaces de usuario, bases de datos y servicios de notificación.
+
+Ejemplo:
+
+plaintext
+Copiar código
++-------------------------+
+|  Interfaz de Usuario    |
++-------------------------+
+      |
+      V
++-------------------------+          +-------------------------+
+|  Aplicación Web Cliente  |          |  Servidor de Aplicación |
++-------------------------+          +-------------------------+
+      |                                   |
+      V                                   V
++-------------------------+          +-------------------------+
+|  Interfaz de Administrador|          |  Servidor de Base de Datos|
++-------------------------+          +-------------------------+
+      |                                   |
+      V                                   V
++-------------------------+          +-------------------------+
+|  Servicio de Anuncios   |          |  Servicio de Usuarios   |
++-------------------------+          +-------------------------+
+      |                                   |
+      V                                   V
++-------------------------+          +-------------------------+
+|  Servicio de Mascotas   |          |  Servicio de Notificaciones|
++-------------------------+          +-------------------------+
+      |                                   |
+      V                                   V
++-------------------------+          +-------------------------+
+|  Servicio de Comentarios |          |  Servicio de Transacciones|
++-------------------------+          +-------------------------+
+6. Diagrama de Despliegue Complejo
+Descripción:
+Este diagrama muestra la configuración física del sistema de adopción y recuperación de mascotas, incluyendo servidores, bases de datos distribuidas y servicios conectados.
+
+Ejemplo:
+
+plaintext
+Copiar código
++-------------------------+     +-------------------------+
+|       Cliente Web        |     |       Servidor Web      |
++-------------------------+     +-------------------------+
+| Navegador Web           |     | Apache Tomcat           |
+| - Aplicación Web Cliente|     | - Aplicación Web Servidor|
++-------------------------+     +-------------------------+
+        |                            |
+        V                            V
++-------------------------+     +-------------------------+
+|  Servidor de Base de Datos|     |  Servidor de Aplicación |
++-------------------------+     +-------------------------+
+| MySQL                   |     | APIs de Servicios        |
++-------------------------+     +-------------------------+
+Conclusión
+Estos diagramas UML complejos proporcionan una representación detallada y profunda del sistema de recuperación y adopción de mascotas, abarcando desde la estructura de clases hasta la implementación física del sistema. Esta representación facilita la comprensión del diseño, la planificación del desarrollo y el despliegue del sistema a nivel profesional.
